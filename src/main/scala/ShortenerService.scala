@@ -7,7 +7,7 @@ import Database.threadLocalSession
 object ShortenerService {
   import ErrorCodes._
 
-  val password = "0bunyip"
+  val password = "password"
   val user = "postgres"
 
   def shorten(url:String): Int = {
