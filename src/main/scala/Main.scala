@@ -14,26 +14,26 @@ object Main extends App with SimpleRoutingApp {
   startServer(interface = "localhost", port = 8080) {
     path("") {
       get {
-        parameters('url ?, 'code ?) { (url, errorCode) =>
-	  val shortUrl = url.flatMap(u => ShortenerService.findShortUrl(u))
-	  println("URL ??? " + url.getOrElse("no url") + " : " + shortUrl.getOrElse("nope"))
-	  html(HtmlComponents.home(shortUrl, errorCode))
-	}
-      }
-    } ~
-    path("shorten") {
+        html(HtmlComponents.home)
+      } ~
       post {
         formFields('url.as[String]) { url =>
           println("POSTED url " + url)
-	  // try and find it first I think, at least save the failed inserts
-	  val errorCode = 
-	    if (UrlValidator.validate(url)) ShortenerService.shorten(url) else invalidUrl
-	  val redirectPath = 
-	    if (errorCode == noError) "/?url=" + URLEncoder.encode(url, "UTF-8") else "/?code=" + errorCode
-	  redirect(redirectPath, StatusCodes.MovedPermanently)			
+	  
+	  val htmlResponse = 
+	    ShortenerService.findShortUrl(url).map{ u =>
+	      HtmlComponents.result(Right(u))
+	    }.getOrElse(HtmlComponents.result(ShortenerService.shorten(url)))
+	  html(htmlResponse)		
 	}
       }
-    }
+    }  ~
+    // extract URI path element as Int
+    // NOT RIGHT YET
+      path("" / Rest) { shortUrl =>
+        val redirectTo = ShortenerService.lengthen(shortUrl).getOrElse("/") // add message somewhere if not found
+	redirect(redirectTo, StatusCodes.MovedPermanently)
+      }
   }
   
   def html(x: xml.NodeBuffer) = 

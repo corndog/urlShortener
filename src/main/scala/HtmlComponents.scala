@@ -12,19 +12,28 @@ object HtmlComponents {
   }
 
   val form = {
-    <form action="shorten" method="POST">
+    <form action="/" method="POST">
       <input type="text" name="url" size="80" />
       <input type="submit" value="do it now" />
     </form>
   }
   
-  // should probably use Either[Int,String]
-  def home(shortUrl:Option[String], errorCode:Option[String]) = {
+  val home = {
     <h1>Enter the URL you want to shorten</h1>
     <div>{ form }</div>
+  }
+  
+  def result(shortUrl:Either[java.lang.Throwable, String]) = {
     <div>
-      { shortUrl.map(u => <div>{"http://127.0.0.1/" + u}</div>).getOrElse(Nil) }
-      { errorCode.map(e => <div>Something went wrong sorry</div>).getOrElse(Nil) }
+      { shortUrl.fold(
+          e => <div>Something went wrong, sorry, maybe try again</div>,
+	  s => <div>Your short url is { "http://127.0.0.1:8080/" + s}</div>
+        ) 
+      }
+    </div>
+    <div>
+      <a href="/">I want to shorten another URL</a>
     </div>
   }
+    
 }

@@ -7,24 +7,28 @@ import Database.threadLocalSession
 object ShortenerService {
   import ErrorCodes._
 
-  val password = "password"
+  val password = "0bunyip"
   val user = "postgres"
 
-  def shorten(url:String): Int = {
+  def shorten(url:String): Either[java.lang.Throwable, String] = {
     Database.forURL("jdbc:postgresql:urlShortener",
                     driver = "org.postgresql.Driver",
                     user = user,
                     password = password) withSession {
-     
-      try {
-        val rm = sqlu"INSERT INTO urls (url) VALUES ($url)".first
-	val id = sql"SELECT id FROM urls where url = $url".as[Long].list.head
-	val encodedUrl = Base64Encoder.encode(id)
-	val x = sqlu"UPDATE urls SET short_url = $encodedUrl WHERE url = $url".first
-      } catch {
-        case e: java.lang.Throwable => println(e, "hopefully just a constraint violation")
+
+      if ( ! (UrlValidator.validate(url)) )
+	Left(new Throwable("Invalid Url"))
+      else {
+        try {
+          val rm = sqlu"INSERT INTO urls (url) VALUES ($url)".first
+	  val id = sql"SELECT id FROM urls where url = $url".as[Long].list.head
+	  val encodedUrl = Base64Encoder.encode(id)
+	  val x = sqlu"UPDATE urls SET short_url = $encodedUrl WHERE url = $url".first
+	  Right(encodedUrl)
+        } catch {
+          case e: java.lang.Throwable => { println(e, "hopefully just a constraint violation"); Left(e)}
+        }
       }
-      noError
     }
   }
   
