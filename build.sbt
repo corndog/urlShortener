@@ -7,6 +7,7 @@ scalaVersion := "2.10.1"
 resolvers ++= Seq(
 	"Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/",
 	"Sonatype OSS Releases" at "http://oss.sonatype.org/content/repositories/releases/",
+	 "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots",
 	"spray repo" at "http://repo.spray.io"
 	)
  
@@ -16,5 +17,6 @@ libraryDependencies ++= Seq(
 	"io.spray" % "spray-routing" % "1.1-M8",
 	"com.typesafe.slick" %% "slick" % "1.0.1",
 	"org.slf4j" % "slf4j-nop" % "1.6.4",
-	"org.postgresql" % "postgresql" % "9.2-1003-jdbc4"
+	"org.postgresql" % "postgresql" % "9.2-1003-jdbc4",
+	 "commons-validator" % "commons-validator" % "1.4.0"
   )

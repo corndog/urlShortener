@@ -1,6 +1,9 @@
 CREATE TABLE urls (
   id BIGSERIAL PRIMARY KEY,
-  url TEXT
+  url TEXT,
+  short_url TEXT
 );
 
 CREATE UNIQUE INDEX idx_unique_url ON urls (url);
+CREATE UNIQUE INDEX idx_unique_short_url ON urls (short_url);
+
