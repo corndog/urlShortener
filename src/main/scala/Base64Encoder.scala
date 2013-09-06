@@ -2,7 +2,7 @@ package com.urlShortener
 
 object Base64Encoder {
   val base = 64L
-  val charSet = ('0' to '9') ++ ('a' to 'z') ++ ('A' to 'Z') ++ Seq('-', '_')
+  val charSet = ('0' to '9') ++ ('a' to 'z') ++ ('A' to 'Z') ++ Seq('+', '_')
 
   def encode(input:Long): String = {
     process(input, Seq[Char]())

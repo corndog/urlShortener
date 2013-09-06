@@ -27,13 +27,18 @@ object HtmlComponents {
     <div>
       { shortUrl.fold(
           e => <div>Something went wrong, sorry, maybe try again</div>,
-	  s => <div>Your short url is { "http://127.0.0.1:8080/" + s}</div>
+	  s => <div>Your short url is { Main.host + s}</div>
         ) 
       }
     </div>
     <div>
       <a href="/">I want to shorten another URL</a>
     </div>
+  }
+  
+  val notFound = {
+    <h1>Not Found</h1>
+    <a href="/">I want to shorten another URL</a>
   }
     
 }

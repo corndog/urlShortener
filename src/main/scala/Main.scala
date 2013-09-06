@@ -8,17 +8,21 @@ import java.net.URLEncoder
 
 object Main extends App with SimpleRoutingApp {
   implicit val system = ActorSystem("urlShortener")
-  
-  import ErrorCodes._
+  val NotFound = "not-found"
+  val host = "http://127.0.0.1:8080/"
   
   startServer(interface = "localhost", port = 8080) {
+    path(NotFound) {
+      get {
+        html(HtmlComponents.notFound) 
+      }
+    } ~
     path("") {
       get {
         html(HtmlComponents.home)
       } ~
       post {
         formFields('url.as[String]) { url =>
-          println("POSTED url " + url)
 	  
 	  val htmlResponse = 
 	    ShortenerService.findShortUrl(url).map{ u =>
@@ -28,12 +32,11 @@ object Main extends App with SimpleRoutingApp {
 	}
       }
     }  ~
-    // extract URI path element as Int
-    // NOT RIGHT YET
-      path("" / Rest) { shortUrl =>
-        val redirectTo = ShortenerService.lengthen(shortUrl).getOrElse("/") // add message somewhere if not found
-	redirect(redirectTo, StatusCodes.MovedPermanently)
-      }
+    path(PathElement) { shortUrl =>
+      val redirectTo = ShortenerService.lengthen(shortUrl).getOrElse(host + NotFound)
+      val statusCode = if (redirectTo.contains(NotFound)) StatusCodes.Found else StatusCodes.MovedPermanently
+      redirect(redirectTo, statusCode)
+    }
   }
   
   def html(x: xml.NodeBuffer) = 
@@ -42,11 +45,4 @@ object Main extends App with SimpleRoutingApp {
         HtmlComponents.layout(x) 
       }
     }
-}
-
-// make an ENUM
-object ErrorCodes {
-  val noError = 0
-  val invalidUrl = 1
-  val otherError = 2
 }

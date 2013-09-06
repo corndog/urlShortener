@@ -5,7 +5,6 @@ import scala.slick.jdbc.StaticQuery.interpolation
 import Database.threadLocalSession
 
 object ShortenerService {
-  import ErrorCodes._
 
   val password = "0bunyip"
   val user = "postgres"
@@ -26,7 +25,7 @@ object ShortenerService {
 	  val x = sqlu"UPDATE urls SET short_url = $encodedUrl WHERE url = $url".first
 	  Right(encodedUrl)
         } catch {
-          case e: java.lang.Throwable => { println(e, "hopefully just a constraint violation"); Left(e)}
+          case e: java.lang.Throwable => { /*println(e, "hopefully just a constraint violation");*/ Left(e)}
         }
       }
     }
