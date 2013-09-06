@@ -14,7 +14,7 @@ object Main extends App with SimpleRoutingApp {
   startServer(interface = "localhost", port = 8080) {
     path(NotFound) {
       get {
-        html(HtmlComponents.notFound) 
+        html(HtmlComponents.notFound)
       }
     } ~
     path("") {
