@@ -26,7 +26,10 @@ object HtmlComponents {
   def result(shortUrl:Either[java.lang.Throwable, String]) = {
     <div>
       { shortUrl.fold(
-          e => <div>Something went wrong, sorry, maybe try again</div>,
+          e => e match {
+  	    case ex: java.net.MalformedURLException => <div>Not a valid url</div>
+	    case _ => <div>Something went wrong, sorry, maybe try again</div>
+	  },
 	  s => <div>Your short url is { Main.host + s}</div>
         ) 
       }

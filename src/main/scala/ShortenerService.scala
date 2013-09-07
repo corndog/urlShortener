@@ -16,7 +16,7 @@ object ShortenerService {
                     password = password) withSession {
 
       if ( ! (UrlValidator.validate(url)) )
-	Left(new Throwable("Invalid Url"))
+	Left(new java.net.MalformedURLException("Invalid Url"))
       else {
         val shortened = sql"SELECT short_url FROM urls where url = $url".as[String].list.headOption
         shortened.map( u=> Right(u)).getOrElse( try {
