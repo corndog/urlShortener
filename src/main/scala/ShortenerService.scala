@@ -6,7 +6,7 @@ import Database.threadLocalSession
 
 object ShortenerService {
 
-  val password = "0bunyip"
+  val password = "password"
   val user = "postgres"
 
   def shorten(url:String): Either[java.lang.Throwable, String] = {
