@@ -5,12 +5,8 @@ import scala.slick.jdbc.StaticQuery.interpolation
 import Database.threadLocalSession
 
 object Services {
+  import BackEnd.ShortenerService
 
-  trait ShortenerService {
-    def shorten(url:String): Either[java.lang.Throwable, String]
-    def lengthen(shortUrl: String): Option[String]
-  }
-  
   trait InMemoryShortenerService extends ShortenerService {
     import scala.collection.mutable.{Map => MMap}
     
