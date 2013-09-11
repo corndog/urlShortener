@@ -4,8 +4,9 @@ import akka.actor._
 import spray.routing._
 import spray.http._
 import spray.http.MediaTypes._
+import com.urlShortener.Services._
 
-object Main extends App with SimpleRoutingApp {
+object Main extends App with SimpleRoutingApp with InMemoryShortenerService {
   implicit val system = ActorSystem("urlShortener")
   val host = "http://127.0.0.1:8080/"
   
@@ -16,13 +17,13 @@ object Main extends App with SimpleRoutingApp {
       } ~
       post {
         formFields('url.as[String]) { url =>
-	  val shortened = ShortenerService.shorten(url)
+	  val shortened = shorten(url)
 	  html(HtmlComponents.result(shortened))		
 	}
       }
     }  ~
     path(PathElement) { shortUrl =>
-      ShortenerService.lengthen(shortUrl)
+      lengthen(shortUrl)
         .map( u => redirect(u, StatusCodes.MovedPermanently))
         .getOrElse(html(HtmlComponents.notFound))
     }
