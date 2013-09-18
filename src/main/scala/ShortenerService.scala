@@ -38,7 +38,7 @@ object Services {
 
   trait SqlShortenerService extends ShortenerService {
 
-    private val password = "0bunyip"
+    private val password = "password"
     private val user = "postgres"
 
     
