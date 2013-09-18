@@ -28,7 +28,7 @@ object HtmlComponents {
       { shortUrl.fold(
           e => e match {
   	    case ex: java.net.MalformedURLException => <div>Not a valid url</div>
-	    case _ => <div>Something went wrong, sorry, maybe try again</div>
+	    case e: java.lang.Throwable => <div>Something went wrong, sorry, maybe try again</div><div>e</div>
 	  },
 	  s => <div>Your short url is { Main.host + s}</div>
         ) 

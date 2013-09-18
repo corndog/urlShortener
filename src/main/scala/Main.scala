@@ -13,7 +13,7 @@ import com.urlShortener.Services._
 // use the service from the component registry, which follows
 // the cake pattern example from Jonas Boner's blog post.
 
-object Main extends App with SimpleRoutingApp /*with SqlShortenerService */ {
+object Main extends App with SimpleRoutingApp with SqlShortenerService {
   implicit val system = ActorSystem("urlShortener")
   val host = "http://127.0.0.1:8080/"
   
@@ -27,13 +27,13 @@ object Main extends App with SimpleRoutingApp /*with SqlShortenerService */ {
       } ~
       post {
         formFields('url.as[String]) { url =>
-	  val shortened = service.shorten(url)
+	  val shortened = /*service.*/ shorten(url)
 	  html(HtmlComponents.result(shortened))		
 	}
       }
     }  ~
     path(PathElement) { shortUrl =>
-      service.lengthen(shortUrl)
+      /*service.*/ lengthen(shortUrl)
         .map( u => redirect(u, StatusCodes.MovedPermanently))
         .getOrElse(html(HtmlComponents.notFound))
     }
