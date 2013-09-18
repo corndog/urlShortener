@@ -41,7 +41,9 @@ object Services {
     private val password = "password"
     private val user = "postgres"
 
-    def _shorten(url:String): Either[java.lang.Throwable, String] = { this.synchronized {
+    
+    // need to put this whole thing in a transaction.
+    def _shorten(url:String): Either[java.lang.Throwable, String] = {
       Database.forURL("jdbc:postgresql:urlShortener",
                     driver = "org.postgresql.Driver",
                     user = user,
@@ -58,7 +60,7 @@ object Services {
           case e: java.lang.Throwable => { /*println(e, "hopefully just a constraint violation");*/ Left(e)}
         })
       }
-    }}
+    }
     
     def shorten(url:String): Either[java.lang.Throwable, String] = {
       if ( ! (UrlValidator.validate(url)) )
