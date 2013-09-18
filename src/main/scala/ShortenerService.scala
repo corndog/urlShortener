@@ -14,19 +14,23 @@ object Services {
     private var longToShort = MMap[String,String]()
     private var shortToLong = MMap[String,String]()
     
-    private def _shorten(url: String): String = {  
-      val shortPath = Base64Encoder.encode(counter)
-      counter = counter + 1
-      longToShort += ( (url -> shortPath) )
-      shortToLong += ( (shortPath -> url) )
-      shortPath
+    private def _shorten(url: String): String = { this.synchronized {
+        longToShort.get(url)
+	  .getOrElse {
+            val shortPath = Base64Encoder.encode(counter)
+            counter = counter + 1
+            longToShort += ( (url -> shortPath) )
+            shortToLong += ( (shortPath -> url) )
+            shortPath
+        }
+      }
     }
     
     def shorten(url: String): Either[java.lang.Throwable, String] = {
       if ( ! (UrlValidator.validate(url)) )
-	  Left(new java.net.MalformedURLException("Invalid Url"))
+	Left(new java.net.MalformedURLException("Invalid Url"))
       else
-        longToShort.get(url).map(Right(_)).getOrElse( Right(_shorten(url) ))
+        Right(_shorten(url))
     }
     
     def lengthen(url: String) = shortToLong.get(url)
