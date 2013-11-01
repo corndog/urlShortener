@@ -3,12 +3,12 @@ package com.urlShortener
 trait Views {
 
   def layout(x: xml.NodeBuffer, title:String = "URL Shortener") = {
-    <html> 
+    <html>
       <head>
 	<title>{title}</title>
       </head>
       <body>{x}</body>
-    </html> 
+    </html>
   }
 
   val form = {
@@ -28,7 +28,7 @@ trait Views {
       { shortUrl.fold(
           e => e match {
   	    case ex: java.net.MalformedURLException => <div>Not a valid url</div>
-	    case e: java.lang.Throwable => <div>Something went wrong, sorry, maybe try again</div><div>e</div>
+	    case e: java.lang.Throwable => <div>Something went wrong, sorry, maybe try again.</div><div>{e}</div>
 	  },
 	  s => <div>Your short url is { Main.host + s}</div>
         ) 
