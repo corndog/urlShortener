@@ -6,41 +6,11 @@ import Database.threadLocalSession
 
 object Services {
   import BackEnd.ShortenerService
-
-  trait InMemoryShortenerService extends ShortenerService {
-    import scala.collection.mutable.{Map => MMap}
-    
-    private var counter = 0
-    private var longToShort = MMap[String,String]()
-    private var shortToLong = MMap[String,String]()
-    
-    private def _shorten(url: String): String = { this.synchronized {
-        longToShort.get(url)
-	  .getOrElse {
-            val shortPath = Base64Encoder.encode(counter)
-            counter = counter + 1
-            longToShort += ( (url -> shortPath) )
-            shortToLong += ( (shortPath -> url) )
-            shortPath
-        }
-      }
-    }
-    
-    def shorten(url: String): Either[java.lang.Throwable, String] = {
-      if ( ! (UrlValidator.validate(url)) )
-	Left(new java.net.MalformedURLException("Invalid Url"))
-      else
-        Right(_shorten(url))
-    }
-    
-    def lengthen(url: String) = shortToLong.get(url)
-  }
-
+  
   trait SqlShortenerService extends ShortenerService {
 
-    private val password = "password"
+    private val password = "0bunyip"
     private val user = "postgres"
-
     
     private def _shorten(url:String): Either[java.lang.Throwable, String] = {
       Database.forURL("jdbc:postgresql:urlShortener",
@@ -99,4 +69,5 @@ object Services {
       }
     }
   }
+
 }

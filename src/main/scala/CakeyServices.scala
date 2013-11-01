@@ -68,6 +68,5 @@ object BackEnd {
     
       def lengthen(shortUrl: String): Option[String] = storageComponent.getLong(shortUrl)
     }
-
    }
  }

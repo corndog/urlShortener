@@ -1,6 +1,6 @@
 package com.urlShortener
 
-object HtmlComponents {
+trait Views {
 
   def layout(x: xml.NodeBuffer, title:String = "URL Shortener") = {
     <html> 
