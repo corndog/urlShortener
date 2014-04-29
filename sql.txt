@@ -7,3 +7,25 @@ CREATE TABLE urls (
 CREATE UNIQUE INDEX idx_unique_url ON urls (url);
 CREATE UNIQUE INDEX idx_unique_short_url ON urls (short_url);
 
+
+CREATE OR REPLACE FUNCTION b64(input bigint) returns text as $$
+DECLARE
+  chars text[] := Array['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','-','_'];
+  base integer := 64;
+  num bigint := input;
+  quotient integer := 1;
+  remainder integer;
+  res text := '';
+  ix integer := 0;
+BEGIN
+  WHILE  quotient > 0  LOOP
+    quotient := num / base;
+    remainder := num % base;
+    ix = remainder + 1;
+    res := concat(chars[ix], res); -- 1-based array indexing WTF
+    num = quotient;
+  END LOOP;
+  return res;
+END;
+$$ LANGUAGE plpgsql;
+

@@ -9,7 +9,7 @@ object Services {
   
   trait SqlShortenerService extends ShortenerService {
 
-    private val password = "password"
+    private val password = "0bunyip"
     private val user = "postgres"
     
     private def _shorten(url:String): Either[java.lang.Throwable, String] = {
@@ -18,20 +18,12 @@ object Services {
                     user = user,
                     password = password) withSession {
 
+	// base64 encoding logic in a stored proc
         try {
-          val rm = sqlu"INSERT INTO urls (url) VALUES ($url)".first
-	  val id = sql"SELECT id FROM urls where url = $url".as[Long].list.head
-	  val encodedUrl = Base64Encoder.encode(id)
-	  val x = sqlu"UPDATE urls SET short_url = $encodedUrl WHERE url = $url".first
+	  val encodedUrl:String = sql"insert into urls(url, short_url) values($url, (select b64((select currval(pg_get_serial_sequence('urls', 'id')))))) returning short_url".as[String].list.head
 	  Right(encodedUrl)
         } catch {
-	 // if we have a constraint violation just look it up again
-	 // haven't figured out how to inspect the error in more detail to confirm
-	  case c:org.postgresql.util.PSQLException => {
-	    val shortUrl = sql"SELECT short_url FROM urls where url = $url".as[String].list.head
-	    Right(shortUrl)
-	  }
-          case e:java.lang.Throwable => { println(e); Left(e) }
+          case e:java.lang.Throwable => Left(e)
         }
       }
     }
