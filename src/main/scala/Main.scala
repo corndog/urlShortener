@@ -32,17 +32,17 @@ object Main extends App with SimpleRoutingApp with SqlShortenerService with View
 	}
       }
     }  ~
-    path(PathElement) { shortUrl =>
+    path(Segment) { shortUrl =>
       /*service.*/ lengthen(shortUrl)
         .map( u => redirect(u, StatusCodes.MovedPermanently))
         .getOrElse(html(notFound))
     }
   }
   
-  def html(x: xml.NodeBuffer) = 
+  def html(x: => Seq[xml.Node]) = 
     respondWithMediaType(`text/html`) {
       complete { 
-        layout(x) 
+        "<!DOCTYPE html>" ++ layout(x).mkString 
       }
     }
 }

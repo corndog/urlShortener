@@ -2,7 +2,7 @@ package com.urlShortener
 
 trait Views {
 
-  def layout(x: xml.NodeBuffer, title:String = "URL Shortener") = {
+  def layout(x: => Seq[xml.Node], title:String = "URL Shortener") = {
     <html>
       <head>
 	<title>{title}</title>
