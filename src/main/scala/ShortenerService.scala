@@ -9,7 +9,7 @@ object Services {
   
   trait SqlShortenerService extends ShortenerService {
 
-    private val password = "0bunyip"
+    private val password = "password"
     private val user = "postgres"
     
     private def _shorten(url:String): Either[java.lang.Throwable, String] = {
