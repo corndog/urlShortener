@@ -1,9 +1,11 @@
 package com.urlShortener
 
+import scala.util._
+
 object BackEnd {
 
   trait ShortenerService {
-    def shorten(longUrl:String): Either[java.lang.Throwable, String]
+    def shorten(longUrl:String): Try[String]
     def lengthen(shortUrl: String): Option[String]
   }
 
@@ -59,11 +61,11 @@ object BackEnd {
         shortPath
       }
     
-      def shorten(longUrl: String): Either[java.lang.Throwable, String] = {
+      def shorten(longUrl: String): Try[String] = {
         if ( ! (UrlValidator.validate(longUrl)) )
-          Left(new java.net.MalformedURLException("Invalid Url"))
+          Failure(new java.net.MalformedURLException("Invalid Url"))
         else
-          storageComponent.getShort(longUrl).map(Right(_)).getOrElse( Right(_shorten(longUrl) ))
+          storageComponent.getShort(longUrl).map(Success(_)).getOrElse( Success(_shorten(longUrl) ))
       }
     
       def lengthen(shortUrl: String): Option[String] = storageComponent.getLong(shortUrl)
