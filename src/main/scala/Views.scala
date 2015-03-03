@@ -7,7 +7,7 @@ trait Views {
   def layout(x: => Seq[xml.Node], title:String = "URL Shortener") =
     <html>
       <head>
-	<title>{title}</title>
+        <title>{title}</title>
       </head>
       <body>{x}</body>
     </html>
@@ -29,7 +29,7 @@ trait Views {
     <div>
       { shortUrl match {
           case Failure(m) => <div>Error:</div><div>{m}</div> 
-	  case Success(s) => <div>Your short url is { Main.host + s}</div>
+          case Success(s) => <div>Your short url is { Main.host + s}</div>
         } 
       }
     </div>

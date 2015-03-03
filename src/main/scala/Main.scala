@@ -27,9 +27,9 @@ object Main extends App with SimpleRoutingApp with SqlShortenerService with View
       } ~
       post {
         formFields('url.as[String]) { url =>
-	  val shortened = /*service.*/ shorten(url)
-	  html(result(shortened))		
-	}
+          val shortened = /*service.*/ shorten(url)
+          html(result(shortened))		
+        }
       }
     }  ~
     (path(Segment) & get) { shortUrl =>
